@@ -1,6 +1,31 @@
 let board = document.querySelector("#board");
 let buttonAdd = document.querySelector("#add");
-let listaTarefas = [];
+let listaTarefas = [];  
+
+let mostrarNaTela = (tarefas) => {
+    let lista = "";
+
+    tarefas.forEach((chave, valor) => {
+        lista += gerarTarefa(chave, valor);
+    });
+
+    return board.innerHTML = lista;
+};
+
+let gerarTarefa = (novaTarefa,posicao) => {
+    let tarefa = `
+        <div class="tarefa m-2" posicao="${posicao}">
+            <div class="col-md-8">
+                ${novaTarefa}
+            </div>
+            <div class="col-md-4">
+                <img src="img/check.jpg" class="iconCheck" alt="Concluído">
+            </div>
+        </div>
+    `;
+
+    return tarefa;
+};
 
 if(localStorage.getItem('listaTarefas')){
     listaTarefas = JSON.parse(localStorage.getItem('listaTarefas'));
@@ -8,32 +33,24 @@ if(localStorage.getItem('listaTarefas')){
     localStorage.setItem('listaTarefas', JSON.stringify(listaTarefas));
 }
 
+board.innerHTML = mostrarNaTela(listaTarefas);
+
 buttonAdd.addEventListener("click", () => {
     let novaTarefa = document.querySelector("#novaTarefa").value;
     listaTarefas.push(novaTarefa);
-    board.innerHTML = mostrarNaTela(listaTarefas);
+    mostrarNaTela(listaTarefas);
     localStorage.setItem('listaTarefas', JSON.stringify(listaTarefas));
 });
 
-let mostrarNaTela = (tarefas) => {
-    let lista = "";
-    for(let tarefa of tarefas){
-        lista += gerarTarefa(tarefa);
+board.addEventListener("click", (e) => {
+    if(e.target.className == "iconCheck"){
+        let tarefa = e.target.parentNode.parentNode;
+        let posicaoTarefa = tarefa.getAttribute('posicao');
+        listaTarefas = listaTarefas.filter((valor, posicao) => {
+            return posicao != posicaoTarefa;
+        })
+        mostrarNaTela(listaTarefas);
+        localStorage.setItem('listaTarefas', JSON.stringify(listaTarefas));
+        // tarefa.remove();
     }
-    return lista;
-};
-
-let gerarTarefa = (novaTarefa) => {
-    let tarefa = `
-        <div class="tarefa m-2">
-            <div class="col-md-8">
-                ${novaTarefa}
-            </div>
-            <div class="col-md-4">
-                <img src="img/check.jpg" class="icon" alt="Concluído">
-            </div>
-        </div>
-    `;
-
-    return tarefa;
-};
+});

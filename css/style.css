@@ -6,6 +6,15 @@
     min-width: 400px;
 }
 
+.iconCheck{
+    width: 40px;
+    height: 40px;
+}
+
+.iconAdd{
+    width: 40px;
+    height: 40px;
+}
 .icon{
     width: 40px;
     height: 40px;
